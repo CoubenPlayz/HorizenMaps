@@ -4,348 +4,1679 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>HorizonMaps</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+
 <style>
   :root{
-    --bg:#ffffff; --panel:#ffffff; --text:#1a1a1a; --muted:#6b6b6b;
-    --border:#e3e3e3; --accent:#4285F4; --accent2:#34A853; --danger:#ea4335;
-    --shadow: 0 2px 14px rgba(0,0,0,0.18);
+    --bg:#ffffff;
+    --panel:#ffffff;
+    --text:#1a1a1a;
+    --muted:#6b6b6b;
+    --border:#e3e3e3;
+    --accent:#4285F4;
+    --accent2:#34A853;
+    --danger:#ea4335;
+    --shadow:0 2px 14px rgba(0,0,0,0.18);
   }
+
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#15181c; --panel:#22262b; --text:#f1f1f1; --muted:#9aa0a6;
-      --border:#3a3f45; --shadow: 0 2px 14px rgba(0,0,0,0.5);
+      --bg:#15181c;
+      --panel:#22262b;
+      --text:#f1f1f1;
+      --muted:#9aa0a6;
+      --border:#3a3f45;
+      --shadow:0 2px 14px rgba(0,0,0,0.5);
     }
   }
+
   :root[data-theme="dark"]{
-    --bg:#15181c; --panel:#22262b; --text:#f1f1f1; --muted:#9aa0a6;
-    --border:#3a3f45; --shadow: 0 2px 14px rgba(0,0,0,0.5);
+    --bg:#15181c;
+    --panel:#22262b;
+    --text:#f1f1f1;
+    --muted:#9aa0a6;
+    --border:#3a3f45;
+    --shadow:0 2px 14px rgba(0,0,0,0.5);
   }
-  *{box-sizing:border-box;}
-  html,body{height:100%; margin:0; background:var(--bg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--text);}
-  #map{ position:absolute; inset:0; }
+
+  *{
+    box-sizing:border-box;
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--text);
+  }
+
+  #map{
+    position:absolute;
+    inset:0;
+  }
+
   #panel{
-    position:absolute; top:calc(12px + env(safe-area-inset-top,0px)); left:12px; z-index:1000;
-    background:var(--panel); padding:14px; border-radius:12px; width:260px;
+    position:absolute;
+    top:calc(12px + env(safe-area-inset-top,0px));
+    left:12px;
+    z-index:1000;
+    background:var(--panel);
+    padding:14px;
+    border-radius:12px;
+    width:260px;
     max-width:calc(100vw - 24px);
-    box-shadow:var(--shadow); border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    border:1px solid var(--border);
   }
-  #panel label{ font-size:11px; color:var(--muted); display:block; margin:8px 0 3px; }
-  #panel label:first-child{ margin-top:0; }
-  .row{ display:flex; gap:6px; }
+
+  #panel label{
+    font-size:11px;
+    color:var(--muted);
+    display:block;
+    margin:8px 0 3px;
+  }
+
+  #panel label:first-child{
+    margin-top:0;
+  }
+
+  .row{
+    display:flex;
+    gap:6px;
+  }
+
   input{
-    width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--border);
-    background:var(--bg); color:var(--text); font-size:14px;
+    width:100%;
+    padding:9px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
   }
-  input:focus{ outline:2px solid var(--accent); outline-offset:-1px; }
+
+  input:focus{
+    outline:2px solid var(--accent);
+    outline-offset:-1px;
+  }
+
   .iconbtn{
-    flex:0 0 auto; width:38px; border-radius:8px; border:1px solid var(--border);
-    background:var(--bg); cursor:pointer; font-size:16px;
+    flex:0 0 auto;
+    width:38px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    cursor:pointer;
+    font-size:16px;
   }
+
   button.primary{
-    width:100%; padding:10px; margin-top:10px; border:none; border-radius:8px;
-    background:var(--accent); color:white; font-size:14px; font-weight:600; cursor:pointer;
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:var(--accent);
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
   }
-  button.primary:disabled{ opacity:0.55; cursor:default; }
-  button.primary:active{ filter:brightness(0.92); }
-  #status{ font-size:12px; color:var(--muted); margin-top:8px; min-height:14px; }
-  #status.err{ color:var(--danger); }
+
+  button.primary:disabled{
+    opacity:0.55;
+    cursor:default;
+  }
+
+  button.primary:active{
+    filter:brightness(0.92);
+  }
+
+  #status{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+    min-height:14px;
+  }
+
+  #status.err{
+    color:var(--danger);
+  }
 
   .route-summary{
-    background:var(--panel); border:1px solid var(--border); border-radius:10px;
-    padding:2px; font-family:inherit; color:var(--text);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:2px;
+    font-family:inherit;
+    color:var(--text);
   }
-  .route-summary .big{ font-size:16px; font-weight:700; }
-  .route-summary .sub{ font-size:12px; color:var(--muted); margin-top:2px; }
-  .leaflet-popup-content-wrapper{ border-radius:10px; }
 
-  .field-wrap{ position:relative; }
-  .suggestions{
-    display:none; position:absolute; top:100%; left:0; right:0; margin-top:4px;
-    background:var(--panel); border:1px solid var(--border); border-radius:8px;
-    max-height:220px; overflow-y:auto; box-shadow:var(--shadow); z-index:1001;
+  .route-summary .big{
+    font-size:16px;
+    font-weight:700;
   }
-  .suggestions.show{ display:block; }
+
+  .route-summary .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  .leaflet-popup-content-wrapper{
+    border-radius:10px;
+  }
+
+  .field-wrap{
+    position:relative;
+  }
+
+  .suggestions{
+    display:none;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    margin-top:4px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    max-height:220px;
+    overflow-y:auto;
+    box-shadow:var(--shadow);
+    z-index:1001;
+  }
+
+  .suggestions.show{
+    display:block;
+  }
+
   .suggestion-item{
-    padding:8px 10px; font-size:12.5px; line-height:1.3; cursor:pointer;
+    padding:8px 10px;
+    font-size:12.5px;
+    line-height:1.3;
+    cursor:pointer;
     border-bottom:1px solid var(--border);
   }
-  .suggestion-item:last-child{ border-bottom:none; }
-  .suggestion-item:hover{ background:var(--bg); }
-  .freq-badge{ font-size:10px; color:var(--accent); margin-left:6px; white-space:nowrap; }
+
+  .suggestion-item:last-child{
+    border-bottom:none;
+  }
+
+  .suggestion-item:hover{
+    background:var(--bg);
+  }
+
+  .freq-badge{
+    font-size:10px;
+    color:var(--accent);
+    margin-left:6px;
+    white-space:nowrap;
+  }
+
+  /* -----------------------------
+     LIVE CAR MARKER
+  ----------------------------- */
+
+  .car-marker{
+    background:transparent;
+    border:none;
+  }
+
+  .car-icon{
+    width:38px;
+    height:38px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35));
+  }
+
+  .car-body{
+    width:28px;
+    height:17px;
+    background:#4285F4;
+    border:2px solid white;
+    border-radius:8px 8px 5px 5px;
+    position:relative;
+  }
+
+  .car-body::before{
+    content:"";
+    position:absolute;
+    width:15px;
+    height:9px;
+    left:5px;
+    top:-7px;
+    background:#4285F4;
+    border:2px solid white;
+    border-bottom:none;
+    border-radius:7px 7px 0 0;
+  }
+
+  .car-body::after{
+    content:"";
+    position:absolute;
+    width:5px;
+    height:5px;
+    background:#222;
+    border-radius:50%;
+    left:3px;
+    bottom:-5px;
+    box-shadow:17px 0 0 #222;
+  }
+
+  /* Direction indicator */
+  .car-arrow{
+    position:absolute;
+    top:-8px;
+    left:14px;
+    width:0;
+    height:0;
+    border-left:5px solid transparent;
+    border-right:5px solid transparent;
+    border-bottom:9px solid #4285F4;
+  }
+
+  /* Accuracy circle */
+  .location-accuracy{
+    border-radius:50%;
+    background:rgba(66,133,244,0.12);
+    border:1px solid rgba(66,133,244,0.35);
+  }
 </style>
 </head>
+
 <body>
 
 <div id="panel">
+
   <label for="origin">From</label>
+
   <div class="field-wrap">
     <div class="row">
-      <input id="origin" placeholder="Your location or an address" autocomplete="off"/>
-      <button class="iconbtn" onclick="useGPS()" title="Use current location">📍</button>
+
+      <input
+        id="origin"
+        placeholder="Your location or an address"
+        autocomplete="off"
+      />
+
+      <button
+        class="iconbtn"
+        id="gpsBtn"
+        onclick="useGPS()"
+        title="Use current location"
+      >
+        📍
+      </button>
+
     </div>
+
     <div class="suggestions" id="originSuggest"></div>
   </div>
 
+
   <label for="dest">To</label>
+
   <div class="field-wrap">
-    <input id="dest" placeholder="Enter destination" autocomplete="off"/>
+
+    <input
+      id="dest"
+      placeholder="Enter destination"
+      autocomplete="off"
+    />
+
     <div class="suggestions" id="destSuggest"></div>
+
   </div>
 
-  <button class="primary" id="routeBtn" onclick="go()">Route</button>
-  <div id="status">Enter a starting point and destination.</div>
+
+  <button
+    class="primary"
+    id="routeBtn"
+    onclick="go()"
+  >
+    Route
+  </button>
+
+  <div id="status">
+    Enter a starting point and destination.
+  </div>
+
 </div>
 
 <div id="map"></div>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
 <script>
-  var map = L.map('map').setView([37.3382, -121.8863], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
 
-  var originMarker = null, destMarker = null, routeLine = null, gpsCoords = null;
-  var selectedOrigin = null, selectedDest = null;
+/* ==================================================
+   MAP
+================================================== */
 
-  function setStatus(msg, isErr){
-    var el = document.getElementById('status');
-    el.textContent = msg;
-    el.className = isErr ? 'err' : '';
+var map = L.map('map').setView(
+  [37.3382, -121.8863],
+  12
+);
+
+L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    attribution:'&copy; OpenStreetMap contributors'
   }
+).addTo(map);
 
-  function useGPS(){
-    if(!navigator.geolocation){
-      setStatus('Geolocation not supported by this browser.', true);
-      return;
-    }
-    setStatus('Requesting your location...');
-    navigator.geolocation.getCurrentPosition(
-      function(pos){
-        gpsCoords = [pos.coords.latitude, pos.coords.longitude];
-        selectedOrigin = { lat: gpsCoords[0], lon: gpsCoords[1], label: 'Your location' };
-        document.getElementById('origin').value = 'My current location';
-        setStatus('Location found — ready to route.');
-        map.setView(gpsCoords, 13);
-      },
-      function(err){
-        setStatus('Could not get location: ' + err.message, true);
-      },
-      { enableHighAccuracy:true, timeout:10000 }
+
+/* ==================================================
+   VARIABLES
+================================================== */
+
+var originMarker = null;
+var destMarker = null;
+var routeLine = null;
+
+/* Live GPS variables */
+var gpsCoords = null;
+var watchId = null;
+var userCarMarker = null;
+var accuracyCircle = null;
+
+var selectedOrigin = null;
+var selectedDest = null;
+
+var followingUser = false;
+
+
+/* ==================================================
+   STATUS
+================================================== */
+
+function setStatus(msg, isErr){
+
+  var el = document.getElementById('status');
+
+  el.textContent = msg;
+
+  el.className = isErr ? 'err' : '';
+}
+
+
+/* ==================================================
+   CREATE CAR ICON
+================================================== */
+
+function createCarIcon(){
+
+  return L.divIcon({
+
+    className:'car-marker',
+
+    html:
+      '<div class="car-icon">' +
+        '<div class="car-arrow"></div>' +
+        '<div class="car-body"></div>' +
+      '</div>',
+
+    iconSize:[38,38],
+
+    iconAnchor:[19,19]
+
+  });
+}
+
+
+/* ==================================================
+   UPDATE LIVE CAR
+================================================== */
+
+function updateUserLocation(pos){
+
+  var lat = pos.coords.latitude;
+  var lon = pos.coords.longitude;
+
+  gpsCoords = [lat, lon];
+
+
+  /* Update the selected origin */
+  selectedOrigin = {
+    lat:lat,
+    lon:lon,
+    label:'Your location'
+  };
+
+
+  document.getElementById('origin').value =
+    'My current location';
+
+
+  /* Create car marker if it doesn't exist */
+  if(!userCarMarker){
+
+    userCarMarker = L.marker(
+      [lat,lon],
+      {
+        icon:createCarIcon(),
+        zIndexOffset:1000
+      }
+    ).addTo(map);
+
+    userCarMarker.bindPopup(
+      '<b>Your current location</b>'
     );
+
+  }else{
+
+    /* Move the car */
+    userCarMarker.setLatLng([lat,lon]);
+
   }
 
-  // ---- frequency memory (per-browser, local only) ----
-  var FREQ_KEY = 'horizonmaps_freq_v1';
-  function loadFreq(){
-    try{ return JSON.parse(localStorage.getItem(FREQ_KEY)) || {}; }
-    catch(e){ return {}; }
+
+  /* Accuracy circle */
+
+  var accuracy = pos.coords.accuracy || 0;
+
+  if(!accuracyCircle){
+
+    accuracyCircle = L.circle(
+      [lat,lon],
+      {
+        radius:accuracy,
+        className:'location-accuracy',
+        interactive:false
+      }
+    ).addTo(map);
+
+  }else{
+
+    accuracyCircle.setLatLng([lat,lon]);
+    accuracyCircle.setRadius(accuracy);
+
   }
-  function bumpFreq(place){
-    if(!place || place.label === 'Your location') return;
-    try{
-      var freq = loadFreq();
-      var key = place.lat.toFixed(4) + ',' + place.lon.toFixed(4);
-      if(freq[key]){ freq[key].count++; }
-      else{ freq[key] = { count:1, label: place.label, lat: place.lat, lon: place.lon }; }
-      localStorage.setItem(FREQ_KEY, JSON.stringify(freq));
-    }catch(e){}
+
+
+  /*
+     Follow the car only when routing/navigation
+     is active.
+  */
+
+  if(followingUser){
+
+    map.panTo(
+      [lat,lon],
+      {
+        animate:true,
+        duration:0.5
+      }
+    );
+
   }
-  function getTopFreq(n){
+
+
+  setStatus('Live location active.');
+}
+
+
+/* ==================================================
+   START LOCATION TRACKING
+================================================== */
+
+function startLocationTracking(){
+
+  if(!navigator.geolocation){
+
+    setStatus(
+      'Geolocation is not supported by this browser.',
+      true
+    );
+
+    return false;
+  }
+
+
+  /*
+     Don't create multiple GPS watches.
+  */
+
+  if(watchId !== null){
+
+    return true;
+
+  }
+
+
+  setStatus('Requesting your location...');
+
+
+  watchId = navigator.geolocation.watchPosition(
+
+    function(pos){
+
+      updateUserLocation(pos);
+
+    },
+
+    function(err){
+
+      var message;
+
+      switch(err.code){
+
+        case err.PERMISSION_DENIED:
+          message = 'Location permission was denied.';
+          break;
+
+        case err.POSITION_UNAVAILABLE:
+          message = 'Your location is unavailable.';
+          break;
+
+        case err.TIMEOUT:
+          message = 'Location request timed out.';
+          break;
+
+        default:
+          message = 'Could not get your location.';
+      }
+
+      setStatus(message,true);
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      maximumAge:2000,
+      timeout:10000
+    }
+
+  );
+
+
+  return true;
+}
+
+
+/* ==================================================
+   STOP LOCATION TRACKING
+================================================== */
+
+function stopLocationTracking(){
+
+  if(watchId !== null){
+
+    navigator.geolocation.clearWatch(watchId);
+
+    watchId = null;
+
+  }
+
+  followingUser = false;
+}
+
+
+/* ==================================================
+   GPS BUTTON
+================================================== */
+
+function useGPS(){
+
+  if(!startLocationTracking()){
+    return;
+  }
+
+  followingUser = true;
+
+}
+
+
+/* ==================================================
+   FREQUENCY MEMORY
+================================================== */
+
+var FREQ_KEY = 'horizonmaps_freq_v1';
+
+
+function loadFreq(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(FREQ_KEY)
+    ) || {};
+
+  }catch(e){
+
+    return {};
+
+  }
+
+}
+
+
+function bumpFreq(place){
+
+  /*
+     Never save the user's GPS location
+     in the frequent-place memory.
+  */
+
+  if(
+    !place ||
+    place.label === 'Your location'
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
     var freq = loadFreq();
-    return Object.keys(freq).map(function(k){ return freq[k]; })
-      .sort(function(a,b){ return b.count - a.count; })
-      .slice(0, n);
+
+    var key =
+      place.lat.toFixed(4) +
+      ',' +
+      place.lon.toFixed(4);
+
+
+    if(freq[key]){
+
+      freq[key].count++;
+
+    }else{
+
+      freq[key] = {
+
+        count:1,
+
+        label:place.label,
+
+        lat:place.lat,
+
+        lon:place.lon
+
+      };
+
+    }
+
+
+    localStorage.setItem(
+      FREQ_KEY,
+      JSON.stringify(freq)
+    );
+
+  }catch(e){}
+
+}
+
+
+function getTopFreq(n){
+
+  var freq = loadFreq();
+
+  return Object.keys(freq)
+
+    .map(function(k){
+      return freq[k];
+    })
+
+    .sort(function(a,b){
+      return b.count - a.count;
+    })
+
+    .slice(0,n);
+
+}
+
+
+/* ==================================================
+   DEBOUNCE
+================================================== */
+
+function debounce(fn,delay){
+
+  var t;
+
+  return function(){
+
+    var args = arguments;
+    var ctx = this;
+
+    clearTimeout(t);
+
+    t = setTimeout(
+      function(){
+        fn.apply(ctx,args);
+      },
+      delay
+    );
+
+  };
+
+}
+
+
+/* ==================================================
+   SEARCH CENTER
+================================================== */
+
+function biasCenter(){
+
+  if(gpsCoords){
+
+    return gpsCoords;
+
   }
 
-  function debounce(fn, delay){
-    var t;
-    return function(){
-      var args = arguments, ctx = this;
-      clearTimeout(t);
-      t = setTimeout(function(){ fn.apply(ctx, args); }, delay);
+  var c = map.getCenter();
+
+  return [
+    c.lat,
+    c.lng
+  ];
+
+}
+
+
+/* ==================================================
+   PLACE SEARCH
+================================================== */
+
+async function fetchSuggestions(query){
+
+  var center = biasCenter();
+
+  var d = 0.4;
+
+  var viewbox =
+    (center[1]-d) + ',' +
+    (center[0]+d) + ',' +
+    (center[1]+d) + ',' +
+    (center[0]-d);
+
+
+  var url =
+    'https://nominatim.openstreetmap.org/search' +
+    '?format=json' +
+    '&limit=5' +
+    '&viewbox=' +
+    viewbox +
+    '&bounded=0' +
+    '&q=' +
+    encodeURIComponent(query);
+
+
+  var res = await fetch(url);
+
+  var data = await res.json();
+
+
+  return data.map(function(d){
+
+    return {
+
+      lat:parseFloat(d.lat),
+
+      lon:parseFloat(d.lon),
+
+      label:d.display_name
+
     };
+
+  });
+
+}
+
+
+/* ==================================================
+   SUGGESTIONS
+================================================== */
+
+function shortLabel(label){
+
+  return label
+    .split(',')
+    .slice(0,3)
+    .join(',')
+    .trim();
+
+}
+
+
+function renderSuggestions(
+  listEl,
+  items,
+  onPick,
+  freqMode
+){
+
+  listEl.innerHTML = '';
+
+
+  if(!items.length){
+
+    listEl.classList.remove('show');
+
+    return;
+
   }
 
-  function shortLabel(label){
-    return label.split(',').slice(0,3).join(',').trim();
-  }
 
-  function biasCenter(){
-    if(gpsCoords) return gpsCoords;
-    var c = map.getCenter();
-    return [c.lat, c.lng];
-  }
+  items.forEach(function(item){
 
-  // location-biased search: soft bias toward a box around the user's current center
-  async function fetchSuggestions(query){
-    var center = biasCenter();
-    var d = 0.4;
-    var viewbox = (center[1]-d) + ',' + (center[0]+d) + ',' + (center[1]+d) + ',' + (center[0]-d);
-    var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=5&viewbox=' + viewbox + '&bounded=0&q=' + encodeURIComponent(query);
-    var res = await fetch(url);
-    var data = await res.json();
-    return data.map(function(d){ return { lat: parseFloat(d.lat), lon: parseFloat(d.lon), label: d.display_name }; });
-  }
+    var row =
+      document.createElement('div');
 
-  function renderSuggestions(listEl, items, onPick, freqMode){
-    listEl.innerHTML = '';
-    if(!items.length){ listEl.classList.remove('show'); return; }
-    items.forEach(function(item){
-      var row = document.createElement('div');
-      row.className = 'suggestion-item';
-      row.textContent = shortLabel(item.label);
-      if(freqMode){
-        var badge = document.createElement('span');
-        badge.className = 'freq-badge';
-        badge.textContent = '★ frequent';
-        row.appendChild(badge);
-      }
-      row.onclick = function(){ onPick(item); listEl.classList.remove('show'); };
-      listEl.appendChild(row);
-    });
-    listEl.classList.add('show');
-  }
+    row.className =
+      'suggestion-item';
 
-  function wireField(inputEl, listEl, onSelect, clearSelection){
-    inputEl.addEventListener('focus', function(){
+    row.textContent =
+      shortLabel(item.label);
+
+
+    if(freqMode){
+
+      var badge =
+        document.createElement('span');
+
+      badge.className =
+        'freq-badge';
+
+      badge.textContent =
+        '★ frequent';
+
+      row.appendChild(badge);
+
+    }
+
+
+    row.onclick = function(){
+
+      onPick(item);
+
+      listEl.classList.remove('show');
+
+    };
+
+
+    listEl.appendChild(row);
+
+  });
+
+
+  listEl.classList.add('show');
+
+}
+
+
+/* ==================================================
+   FIELD WIRING
+================================================== */
+
+function wireField(
+  inputEl,
+  listEl,
+  onSelect,
+  clearSelection
+){
+
+  inputEl.addEventListener(
+    'focus',
+    function(){
+
       if(!inputEl.value.trim()){
-        renderSuggestions(listEl, getTopFreq(5), function(item){
-          inputEl.value = shortLabel(item.label);
-          onSelect(item);
-        }, true);
-      }
-    });
-    inputEl.addEventListener('input', debounce(async function(){
-      clearSelection();
-      var val = inputEl.value.trim();
-      if(val.length < 3){ listEl.classList.remove('show'); return; }
-      try{
-        var results = await fetchSuggestions(val);
-        renderSuggestions(listEl, results, function(item){
-          inputEl.value = shortLabel(item.label);
-          onSelect(item);
-        });
-      }catch(e){ /* silent — user can still hit Route to try a full geocode */ }
-    }, 350));
-  }
 
-  wireField(
-    document.getElementById('origin'),
-    document.getElementById('originSuggest'),
-    function(item){ selectedOrigin = item; },
-    function(){ if(document.getElementById('origin').value !== 'My current location') selectedOrigin = null; }
-  );
-  wireField(
-    document.getElementById('dest'),
-    document.getElementById('destSuggest'),
-    function(item){ selectedDest = item; },
-    function(){ selectedDest = null; }
-  );
+        renderSuggestions(
+          listEl,
+          getTopFreq(5),
+          function(item){
 
-  document.addEventListener('click', function(e){
-    var oWrap = document.getElementById('origin').closest('.field-wrap');
-    var dWrap = document.getElementById('dest').closest('.field-wrap');
-    if(oWrap && !oWrap.contains(e.target)) document.getElementById('originSuggest').classList.remove('show');
-    if(dWrap && !dWrap.contains(e.target)) document.getElementById('destSuggest').classList.remove('show');
-  });
+            inputEl.value =
+              shortLabel(item.label);
 
-  async function geocode(query){
-    var res = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query));
-    var data = await res.json();
-    if(!data.length) throw new Error('Could not find "' + query + '"');
-    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon), label: data[0].display_name };
-  }
+            onSelect(item);
 
-  function clearRoute(){
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-    if(originMarker){ map.removeLayer(originMarker); originMarker = null; }
-    if(destMarker){ map.removeLayer(destMarker); destMarker = null; }
-  }
+          },
+          true
+        );
 
-  async function resolveOrigin(){
-    var val = document.getElementById('origin').value.trim();
-    if(!val) throw new Error('Enter a starting point, or tap 📍');
-    if(selectedOrigin) return selectedOrigin;
-    if(val === 'My current location'){
-      if(!gpsCoords) throw new Error('Tap 📍 to get your current location first');
-      return { lat: gpsCoords[0], lon: gpsCoords[1], label: 'Your location' };
-    }
-    return await geocode(val);
-  }
-
-  async function resolveDest(){
-    var val = document.getElementById('dest').value.trim();
-    if(selectedDest) return selectedDest;
-    return await geocode(val);
-  }
-
-  async function go(){
-    var destVal = document.getElementById('dest').value.trim();
-    if(!destVal){ setStatus('Enter a destination.', true); return; }
-
-    var btn = document.getElementById('routeBtn');
-    btn.disabled = true;
-    clearRoute();
-
-    try{
-      setStatus('Locating starting point...');
-      var start = await resolveOrigin();
-
-      setStatus('Locating destination...');
-      var dest = await resolveDest();
-
-      setStatus('Calculating route...');
-      var url = 'https://router.project-osrm.org/route/v1/driving/' +
-        start.lon + ',' + start.lat + ';' + dest.lon + ',' + dest.lat +
-        '?overview=full&geometries=geojson';
-      var res = await fetch(url);
-      var data = await res.json();
-      if(data.code !== 'Ok' || !data.routes || !data.routes.length){
-        throw new Error('No route found between those points');
       }
 
-      var route = data.routes[0];
-      var coords = route.geometry.coordinates.map(function(c){ return [c[1], c[0]]; });
-
-      routeLine = L.polyline(coords, { color: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#4285F4', weight: 5, opacity: 0.9 }).addTo(map);
-
-      originMarker = L.marker([start.lat, start.lon]).addTo(map).bindPopup('Start: ' + (start.label || 'Your location'));
-      destMarker = L.marker([dest.lat, dest.lon]).addTo(map);
-
-      var miles = (route.distance / 1609.34).toFixed(1);
-      var totalMin = Math.round(route.duration / 60);
-      var h = Math.floor(totalMin / 60), m = totalMin % 60;
-      var timeStr = h > 0 ? (h + ' hr ' + m + ' min') : (m + ' min');
-
-      var popupHtml =
-        '<div class="route-summary">' +
-          '<div class="big">' + timeStr + '</div>' +
-          '<div class="sub">' + miles + ' mi &middot; fastest route</div>' +
-        '</div>';
-
-      destMarker.bindPopup(popupHtml).openPopup();
-      map.fitBounds(coords, { padding: [40, 40] });
-
-      setStatus(timeStr + ' · ' + miles + ' mi');
-      bumpFreq(start);
-      bumpFreq(dest);
-      document.getElementById('originSuggest').classList.remove('show');
-      document.getElementById('destSuggest').classList.remove('show');
-    }catch(e){
-      setStatus(e.message, true);
-    }finally{
-      btn.disabled = false;
     }
+  );
+
+
+  inputEl.addEventListener(
+    'input',
+    debounce(
+      async function(){
+
+        clearSelection();
+
+        var val =
+          inputEl.value.trim();
+
+
+        if(val.length < 3){
+
+          listEl.classList.remove('show');
+
+          return;
+
+        }
+
+
+        try{
+
+          var results =
+            await fetchSuggestions(val);
+
+
+          renderSuggestions(
+            listEl,
+            results,
+            function(item){
+
+              inputEl.value =
+                shortLabel(item.label);
+
+              onSelect(item);
+
+            }
+          );
+
+        }catch(e){
+
+          /*
+             Search failure is silent so
+             the user can still press Route.
+          */
+
+        }
+
+      },
+      350
+    )
+  );
+
+}
+
+
+wireField(
+
+  document.getElementById('origin'),
+
+  document.getElementById('originSuggest'),
+
+  function(item){
+
+    selectedOrigin = item;
+
+  },
+
+  function(){
+
+    if(
+      document.getElementById('origin').value !==
+      'My current location'
+    ){
+
+      selectedOrigin = null;
+
+    }
+
   }
 
-  document.getElementById('dest').addEventListener('keydown', function(e){
-    if(e.key === 'Enter') go();
-  });
-  document.getElementById('origin').addEventListener('keydown', function(e){
-    if(e.key === 'Enter') go();
-  });
+);
+
+
+wireField(
+
+  document.getElementById('dest'),
+
+  document.getElementById('destSuggest'),
+
+  function(item){
+
+    selectedDest = item;
+
+  },
+
+  function(){
+
+    selectedDest = null;
+
+  }
+
+);
+
+
+/* ==================================================
+   CLOSE SUGGESTIONS
+================================================== */
+
+document.addEventListener(
+  'click',
+  function(e){
+
+    var oWrap =
+      document
+        .getElementById('origin')
+        .closest('.field-wrap');
+
+    var dWrap =
+      document
+        .getElementById('dest')
+        .closest('.field-wrap');
+
+
+    if(
+      oWrap &&
+      !oWrap.contains(e.target)
+    ){
+
+      document
+        .getElementById('originSuggest')
+        .classList.remove('show');
+
+    }
+
+
+    if(
+      dWrap &&
+      !dWrap.contains(e.target)
+    ){
+
+      document
+        .getElementById('destSuggest')
+        .classList.remove('show');
+
+    }
+
+  }
+);
+
+
+/* ==================================================
+   GEOCODE
+================================================== */
+
+async function geocode(query){
+
+  var res = await fetch(
+    'https://nominatim.openstreetmap.org/search' +
+    '?format=json' +
+    '&limit=1' +
+    '&q=' +
+    encodeURIComponent(query)
+  );
+
+
+  var data = await res.json();
+
+
+  if(!data.length){
+
+    throw new Error(
+      'Could not find "' +
+      query +
+      '"'
+    );
+
+  }
+
+
+  return {
+
+    lat:parseFloat(data[0].lat),
+
+    lon:parseFloat(data[0].lon),
+
+    label:data[0].display_name
+
+  };
+
+}
+
+
+/* ==================================================
+   CLEAR ROUTE
+================================================== */
+
+function clearRoute(){
+
+  if(routeLine){
+
+    map.removeLayer(routeLine);
+
+    routeLine = null;
+
+  }
+
+
+  if(originMarker){
+
+    map.removeLayer(originMarker);
+
+    originMarker = null;
+
+  }
+
+
+  if(destMarker){
+
+    map.removeLayer(destMarker);
+
+    destMarker = null;
+
+  }
+
+}
+
+
+/* ==================================================
+   RESOLVE ORIGIN
+================================================== */
+
+async function resolveOrigin(){
+
+  var val =
+    document
+      .getElementById('origin')
+      .value
+      .trim();
+
+
+  if(!val){
+
+    throw new Error(
+      'Enter a starting point, or tap 📍'
+    );
+
+  }
+
+
+  /*
+     If live GPS is active, always use
+     the newest GPS position.
+  */
+
+  if(
+    val === 'My current location' &&
+    gpsCoords
+  ){
+
+    return {
+
+      lat:gpsCoords[0],
+
+      lon:gpsCoords[1],
+
+      label:'Your location'
+
+    };
+
+  }
+
+
+  if(selectedOrigin){
+
+    return selectedOrigin;
+
+  }
+
+
+  if(
+    val === 'My current location'
+  ){
+
+    throw new Error(
+      'Tap 📍 to get your current location first'
+    );
+
+  }
+
+
+  return await geocode(val);
+
+}
+
+
+/* ==================================================
+   RESOLVE DESTINATION
+================================================== */
+
+async function resolveDest(){
+
+  var val =
+    document
+      .getElementById('dest')
+      .value
+      .trim();
+
+
+  if(selectedDest){
+
+    return selectedDest;
+
+  }
+
+
+  return await geocode(val);
+
+}
+
+
+/* ==================================================
+   ROUTING
+================================================== */
+
+async function go(){
+
+  var destVal =
+    document
+      .getElementById('dest')
+      .value
+      .trim();
+
+
+  if(!destVal){
+
+    setStatus(
+      'Enter a destination.',
+      true
+    );
+
+    return;
+
+  }
+
+
+  var btn =
+    document.getElementById('routeBtn');
+
+
+  btn.disabled = true;
+
+
+  clearRoute();
+
+
+  try{
+
+    /*
+       If using current location,
+       start live GPS tracking first.
+    */
+
+    var originText =
+      document
+        .getElementById('origin')
+        .value
+        .trim();
+
+
+    if(
+      originText === 'My current location'
+    ){
+
+      startLocationTracking();
+
+      followingUser = true;
+
+
+      /*
+         Give the GPS a moment to obtain
+         the first position if necessary.
+      */
+
+      if(!gpsCoords){
+
+        setStatus(
+          'Waiting for your location...'
+        );
+
+
+        await waitForGPS(10000);
+
+      }
+
+    }
+
+
+    setStatus(
+      'Locating starting point...'
+    );
+
+
+    var start =
+      await resolveOrigin();
+
+
+    setStatus(
+      'Locating destination...'
+    );
+
+
+    var dest =
+      await resolveDest();
+
+
+    setStatus(
+      'Calculating route...'
+    );
+
+
+    var url =
+      'https://router.project-osrm.org/route/v1/driving/' +
+
+      start.lon + ',' +
+      start.lat + ';' +
+
+      dest.lon + ',' +
+      dest.lat +
+
+      '?overview=full&geometries=geojson';
+
+
+    var res =
+      await fetch(url);
+
+
+    var data =
+      await res.json();
+
+
+    if(
+      data.code !== 'Ok' ||
+      !data.routes ||
+      !data.routes.length
+    ){
+
+      throw new Error(
+        'No route found between those points'
+      );
+
+    }
+
+
+    var route =
+      data.routes[0];
+
+
+    var coords =
+      route.geometry.coordinates.map(
+        function(c){
+
+          return [
+            c[1],
+            c[0]
+          ];
+
+        }
+      );
+
+
+    routeLine =
+      L.polyline(
+        coords,
+        {
+          color:
+            getComputedStyle(
+              document.documentElement
+            )
+            .getPropertyValue('--accent')
+            .trim()
+            ||
+            '#4285F4',
+
+          weight:5,
+
+          opacity:0.9
+        }
+      ).addTo(map);
+
+
+    /*
+       Only create a normal origin marker
+       if this isn't live GPS.
+    */
+
+    if(
+      start.label !== 'Your location'
+    ){
+
+      originMarker =
+        L.marker([
+          start.lat,
+          start.lon
+        ])
+        .addTo(map)
+        .bindPopup(
+          'Start: ' +
+          (start.label || 'Starting point')
+        );
+
+    }
+
+
+    destMarker =
+      L.marker([
+        dest.lat,
+        dest.lon
+      ])
+      .addTo(map);
+
+
+    var miles =
+      (
+        route.distance / 1609.34
+      ).toFixed(1);
+
+
+    var totalMin =
+      Math.round(
+        route.duration / 60
+      );
+
+
+    var h =
+      Math.floor(totalMin / 60);
+
+
+    var m =
+      totalMin % 60;
+
+
+    var timeStr =
+      h > 0
+        ? h + ' hr ' + m + ' min'
+        : m + ' min';
+
+
+    var popupHtml =
+      '<div class="route-summary">' +
+
+        '<div class="big">' +
+          timeStr +
+        '</div>' +
+
+        '<div class="sub">' +
+          miles +
+          ' mi &middot; fastest route' +
+        '</div>' +
+
+      '</div>';
+
+
+    destMarker
+      .bindPopup(popupHtml)
+      .openPopup();
+
+
+    /*
+       Fit route initially.
+       After this, GPS tracking follows
+       the car.
+    */
+
+    map.fitBounds(
+      coords,
+      {
+        padding:[40,40]
+      }
+    );
+
+
+    setStatus(
+      timeStr +
+      ' · ' +
+      miles +
+      ' mi · Live location active'
+    );
+
+
+    bumpFreq(start);
+
+    bumpFreq(dest);
+
+
+    document
+      .getElementById('originSuggest')
+      .classList.remove('show');
+
+
+    document
+      .getElementById('destSuggest')
+      .classList.remove('show');
+
+
+  }catch(e){
+
+    setStatus(
+      e.message,
+      true
+    );
+
+  }finally{
+
+    btn.disabled = false;
+
+  }
+
+}
+
+
+/* ==================================================
+   WAIT FOR FIRST GPS POSITION
+================================================== */
+
+function waitForGPS(timeout){
+
+  return new Promise(
+    function(resolve,reject){
+
+      var start =
+        Date.now();
+
+
+      var timer =
+        setInterval(
+          function(){
+
+            if(gpsCoords){
+
+              clearInterval(timer);
+
+              resolve();
+
+              return;
+
+            }
+
+
+            if(
+              Date.now() - start >=
+              timeout
+            ){
+
+              clearInterval(timer);
+
+              reject(
+                new Error(
+                  'Could not get your current location.'
+                )
+              );
+
+            }
+
+          },
+          100
+        );
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   ENTER KEY
+================================================== */
+
+document
+  .getElementById('dest')
+  .addEventListener(
+    'keydown',
+    function(e){
+
+      if(e.key === 'Enter'){
+
+        go();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById('origin')
+  .addEventListener(
+    'keydown',
+    function(e){
+
+      if(e.key === 'Enter'){
+
+        go();
+
+      }
+
+    }
+  );
+
+
+/* ==================================================
+   CLEANUP
+================================================== */
+
+window.addEventListener(
+  'beforeunload',
+  function(){
+
+    stopLocationTracking();
+
+  }
+);
+
 </script>
+
 </body>
 </html>
